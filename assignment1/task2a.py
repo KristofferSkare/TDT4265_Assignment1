@@ -12,7 +12,10 @@ def pre_process_images(X: np.ndarray):
     """
     assert X.shape[1] == 784,\
         f"X.shape[1]: {X.shape[1]}, should be 784"
-    # TODO implement this function (Task 2a)
+    batch_size, _ = X.shape 
+    X = 2/255*X - 1
+    ones = np.ones((batch_size, 1))
+    X = np.hstack((X, ones))
     return X
 
 
@@ -27,14 +30,19 @@ def cross_entropy_loss(targets: np.ndarray, outputs: np.ndarray) -> float:
     # TODO implement this function (Task 2a)
     assert targets.shape == outputs.shape,\
         f"Targets shape: {targets.shape}, outputs: {outputs.shape}"
-    return 0
+    N = outputs.size
+    loss = 0
+    for i in range(N):
+        loss += -(targets[i]*np.log(outputs[i]) + (1- targets[i])*np.log(1 - outputs[i]))
+    loss *= 1/N
+    return loss
 
 
 class BinaryModel:
 
     def __init__(self):
         # Define number of input nodes
-        self.I = None
+        self.I = 785
         self.w = np.zeros((self.I, 1))
         self.grad = None
 
@@ -45,8 +53,9 @@ class BinaryModel:
         Returns:
             y: output of model with shape [batch size, 1]
         """
-        # TODO implement this function (Task 2a)
-        return None
+        Z = np.matmul(X,self.w)
+        Y = 1/(1 + np.exp(-Z))
+        return Y
 
     def backward(self, X: np.ndarray, outputs: np.ndarray, targets: np.ndarray) -> None:
         """
@@ -62,6 +71,8 @@ class BinaryModel:
         self.grad = np.zeros_like(self.w)
         assert self.grad.shape == self.w.shape,\
             f"Grad shape: {self.grad.shape}, w: {self.w.shape}"
+        self.grad = - 1/targets.size * np.matmul(X.T, (targets - outputs))
+
 
     def zero_grad(self) -> None:
         self.grad = None
