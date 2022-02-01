@@ -87,8 +87,18 @@ class BaseTrainer:
                     train_history["accuracy"][global_step] = accuracy_train
                     val_history["loss"][global_step] = val_loss
                     val_history["accuracy"][global_step] = accuracy_val
-
-                    # TODO (Task 2d): Implement early stopping here.
-                    # You can access the validation loss in val_history["loss"]
+                    # TODO: Dont know if this is the correct way of implementing 
+                    # "validation loss does not improve after passing through 20% of the training dataset 10 times"
+                    # What does does not improve mean?
+                    if len(val_history["loss"]) >= 10:
+                        val_did_improve = False
+                        keys = [*val_history["loss"].keys()][-10:]
+                        for i in range(1,len(keys)):
+                           if val_history["loss"][keys[0]] - val_history["loss"][keys[i]] > 0:
+                                val_did_improve = True
+                                break
+                        if not val_did_improve:
+                            return train_history, val_history
+                    
                 global_step += 1
         return train_history, val_history
