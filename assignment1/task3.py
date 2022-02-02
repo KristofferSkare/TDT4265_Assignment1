@@ -22,7 +22,6 @@ def calculate_accuracy(X: np.ndarray, targets: np.ndarray, model: SoftmaxModel) 
     for image in range(batch_size):
         pred_number = np.argmax(outputs[image])
         label = np.argmax(targets[image])
-        # print(pred_number, label)
         if pred_number == label:
             correct += 1
     # TODO: Implement this function (task 3c)
@@ -139,8 +138,35 @@ if __name__ == "__main__":
     train_history_reg01, val_history_reg01 = trainer.train(num_epochs)
     # You can finish the rest of task 4 below this point.
 
+    print("Final Train Cross Entropy Loss:",
+          cross_entropy_loss(Y_train, model.forward(X_train)))
+    print("Final Validation Cross Entropy Loss:",
+          cross_entropy_loss(Y_val, model.forward(X_val)))
+    print("Final Train accuracy:", calculate_accuracy(X_train, Y_train, model1))
+    print("Final Validation accuracy:", calculate_accuracy(X_val, Y_val, model1))
+
+    plt.ylim([0.2, .6])
+    utils.plot_loss(train_history_reg01["loss"],
+                    "Training Loss", npoints_to_average=10)
+    utils.plot_loss(val_history_reg01["loss"], "Validation Loss")
+    plt.legend()
+    plt.xlabel("Number of Training Steps")
+    plt.ylabel("Cross Entropy Loss - Average")
+    plt.savefig("task3b_softmax_train_loss.png")
+    plt.show()
+
+    # Plot accuracy
+    plt.ylim([0.89, .93])
+    utils.plot_loss(train_history_reg01["accuracy"], "Training Accuracy")
+    utils.plot_loss(val_history_reg01["accuracy"], "Validation Accuracy")
+    plt.xlabel("Number of Training Steps")
+    plt.ylabel("Accuracy")
+    plt.legend()
+    plt.savefig("task3b_softmax_train_accuracy.png")
+    plt.show()
+
     # Plotting of softmax weights (Task 4b)
-    #plt.imsave("task4b_softmax_weight.png", weight, cmap="gray")
+    # plt.imsave("task4b_softmax_weight.png", weight, cmap="gray")
 
     # Plotting of accuracy for difference values of lambdas (task 4c)
     l2_lambdas = [2, .2, .02, .002]
