@@ -51,7 +51,8 @@ class BaseTrainer:
 
     def train(
             self,
-            num_epochs: int):
+            num_epochs: int,
+            early_stopping: bool = True):
         """
         Training loop for model.
         Implements stochastic gradient descent with num_epochs passes over the train dataset.
@@ -90,7 +91,7 @@ class BaseTrainer:
                     # TODO: Dont know if this is the correct way of implementing 
                     # "validation loss does not improve after passing through 20% of the training dataset 10 times"
                     # What does does not improve mean?
-                    if len(val_history["loss"]) >= 10:
+                    if early_stopping and len(val_history["loss"]) >= 10:
                         val_did_improve = False
                         keys = [*val_history["loss"].keys()][-10:]
                         for i in range(1,len(keys)):
@@ -98,6 +99,7 @@ class BaseTrainer:
                                 val_did_improve = True
                                 break
                         if not val_did_improve:
+                            print("Stopped in epoch ", epoch)
                             return train_history, val_history
                     
                 global_step += 1

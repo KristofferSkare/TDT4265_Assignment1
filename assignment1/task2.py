@@ -77,7 +77,7 @@ if __name__ == "__main__":
     # Load dataset
     category1, category2 = 2, 3
     X_train, Y_train, X_val, Y_val = utils.load_binary_dataset(
-        category1, category2)
+        category1, category2, sample_stochastic=False)
 
     X_train = pre_process_images(X_train)
     X_val = pre_process_images(X_val)
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         model, learning_rate, batch_size, shuffle_dataset,
         X_train, Y_train, X_val, Y_val,
     )
-    train_history, val_history = trainer.train(num_epochs)
+    train_history, val_history = trainer.train(num_epochs, True)
 
     # Plot and print everything you want of information
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     plt.legend()
     plt.xlabel("Number of Training Steps")
     plt.ylabel("Cross Entropy Loss - Average")
-    plt.savefig("task2b_binary_train_loss.png")
+    #plt.savefig("task2e_binary_train_loss.png")
     plt.show()
 
     # Plot accuracy
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     plt.xlabel("Number of Training Steps")
     plt.ylabel("Accuracy")
     plt.legend()
-    plt.savefig("task2b_binary_train_accuracy.png")
+    #plt.savefig("task2e_binary_train_accuracy.png")
     plt.show()
 
     # Task 2e - Create a comparison between training with and without shuffling
